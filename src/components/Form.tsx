@@ -17,11 +17,13 @@ const Form = () => {
   console.log(inputValue);
 
   useEffect(() => {
-    if (focusInput.current) focusInput.current.focus();
+    if (focusInput.current) {
+      focusInput.current.focus();
+    }
   }, []);
 
-  const onChange = (e:any) => {
-    setInputValue({ ...inputValue, [e.target.name]: e.target.value });
+  const onChange = (name: string, value: string) => {
+    setInputValue({ ...inputValue, [name]: value });
   };
 
   const onSubmit = (e:any) => {
@@ -44,6 +46,20 @@ const Form = () => {
   const regMale = new RegExp('[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$');
   const regTel = new RegExp('^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{2})[-. )]*(\\d{2})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$');
 
+  const validationHandler = (regex: RegExp, value:string) => (
+    !regex.test(value)
+      ? (
+        <div className={styles.validation__container}>
+          <span className={styles.error__text}>Name is not valid.</span>
+        </div>
+      )
+      : (
+        <div className={styles.validation__container}>
+          <span className={styles.valid__text}>Name is valid.</span>
+        </div>
+      )
+  );
+
   return (
     <div>
       <div className={styles.form__container}>
@@ -60,19 +76,9 @@ const Form = () => {
             id="name"
             required
             placeholder="Fullname"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
           />
-          {!regName.test(inputValue.name)
-            ? (
-              <div className={styles.validation__container}>
-                <span className={styles.error__text}>Name is not valid.</span>
-              </div>
-            )
-            : (
-              <div className={styles.validation__container}>
-                <span className={styles.valid__text}>Name is valid.</span>
-              </div>
-            )}
+          {validationHandler(regName, inputValue.name)}
 
           <input
             className={styles.input}
@@ -81,17 +87,9 @@ const Form = () => {
             id="mail"
             required
             placeholder="E-mail"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
           />
-          {!regMale.test(inputValue.mail) ? (
-            <div className={styles.validation__container}>
-              <span className={styles.error__text}>E-mail is not valid.</span>
-            </div>
-          ) : (
-            <div className={styles.validation__container}>
-              <span className={styles.valid__text}>E-mail is valid.</span>
-            </div>
-          )}
+          {validationHandler(regMale, inputValue.mail)}
 
           <input
             className={styles.input}
@@ -100,17 +98,9 @@ const Form = () => {
             id="tel"
             required
             placeholder="Phone number"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
           />
-          {!regTel.test(inputValue.tel) ? (
-            <div className={styles.validation__container}>
-              <span className={styles.error__text}>Phone number is not valid.</span>
-            </div>
-          ) : (
-            <div className={styles.validation__container}>
-              <span className={styles.valid__text}>Phone number is valid.</span>
-            </div>
-          )}
+          {validationHandler(regTel, inputValue.tel)}
 
           <div className={styles.gender__container}>
             <label htmlFor="male">
@@ -120,7 +110,7 @@ const Form = () => {
                 value="male"
                 name="gender"
                 required
-                onChange={onChange}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
               />
               {' '}
               Male
@@ -146,7 +136,7 @@ const Form = () => {
           <div className={styles.robot__container}>
             <label htmlFor="robot">
               <input
-                onChange={onChange}
+                onChange={(e) => onChange(e.target.name, e.target.value)}
                 type="checkbox"
                 name="robot"
                 required
